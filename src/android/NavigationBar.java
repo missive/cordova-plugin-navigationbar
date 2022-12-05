@@ -173,7 +173,7 @@ public class NavigationBar extends CordovaPlugin {
             if (colorPref != null && !colorPref.isEmpty()) {
                 final Window window = cordova.getActivity().getWindow();
                 int uiOptions = window.getDecorView().getSystemUiVisibility();
-                             
+
                 // 0x80000000 FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS
                 // 0x00000010 SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR
 
@@ -185,7 +185,7 @@ public class NavigationBar extends CordovaPlugin {
                     uiOptions = uiOptions & ~0x00000010;
 
                 window.getDecorView().setSystemUiVisibility(uiOptions);
-                
+
                 try {
                     // Using reflection makes sure any 5.0+ device will work without having to compile with SDK level 21
                     window.getClass().getDeclaredMethod("setNavigationBarColor", int.class).invoke(window, Color.parseColor(colorPref));
