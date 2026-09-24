@@ -27,7 +27,9 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 
+import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
 import androidx.core.view.WindowInsetsControllerCompat;
 
 import org.apache.cordova.CallbackContext;
@@ -38,6 +40,7 @@ import org.apache.cordova.CordovaWebView;
 import org.apache.cordova.LOG;
 import org.apache.cordova.PluginResult;
 import org.json.JSONException;
+import org.json.JSONObject;
 
 public class NavigationBar extends CordovaPlugin {
     private static final String TAG = "NavigationBar";
@@ -151,6 +154,20 @@ public class NavigationBar extends CordovaPlugin {
             return true;
         }
 
+        if ("insets".equals(action)) {
+            this.cordova.getActivity().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        callbackContext.success(getInsets());
+                    } catch (JSONException e) {
+                        callbackContext.error(e.getMessage());
+                    }
+                }
+            });
+            return true;
+        }
+
         if ("backgroundColorByHexString".equals(action)) {
             this.cordova.getActivity().runOnUiThread(new Runnable() {
                 @Override
@@ -166,6 +183,20 @@ public class NavigationBar extends CordovaPlugin {
         }
 
         return false;
+    }
+
+    private JSONObject getInsets() throws JSONException {
+        WindowInsetsCompat windowInsets = ViewCompat.getRootWindowInsets(webView.getView());
+        Insets bars = windowInsets == null ? Insets.NONE
+                : windowInsets.getInsets(WindowInsetsCompat.Type.navigationBars());
+
+        float density = cordova.getActivity().getResources().getDisplayMetrics().density;
+        JSONObject result = new JSONObject();
+        result.put("top", bars.top / density);
+        result.put("right", bars.right / density);
+        result.put("bottom", bars.bottom / density);
+        result.put("left", bars.left / density);
+        return result;
     }
 
     private void setNavigationBarBackgroundColor(final String colorPref, Boolean lightNavigationBar) {

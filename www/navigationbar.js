@@ -39,6 +39,10 @@ var namedColors = {
     "brown": "#A52A2A"
 };
 
+function getInset(side, success, error) {
+    exec(function (insets) { success(insets[side]); }, error, "NavigationBar", "insets", []);
+}
+
 var NavigationBar = {
 
     isVisible: true,
@@ -70,6 +74,22 @@ var NavigationBar = {
     show: function () {
         exec(null, null, "NavigationBar", "show", []);
         NavigationBar.isVisible = true;
+    },
+
+    getInsetTop: function (success, error) {
+        getInset("top", success, error);
+    },
+
+    getInsetRight: function (success, error) {
+        getInset("right", success, error);
+    },
+
+    getInsetBottom: function (success, error) {
+        getInset("bottom", success, error);
+    },
+
+    getInsetLeft: function (success, error) {
+        getInset("left", success, error);
     }
 
 };
